@@ -8,7 +8,8 @@ import { Server } from "socket.io";
 import express from 'express';
 const app = express();
 
-import path from 'path';
+import { fileURLToPath } from 'url';
+import path, { dirname, join } from 'path';
 
 import { createServer } from 'http';
 
@@ -34,11 +35,14 @@ const PORT = process.env.PORT;
 //     })
 // }
 
-app.use(express.static(path.join(__dirname,"./client/build")));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-app.get('*', (req,res)=>{
-    res.sendFile(path.join(__dirname, "./client/build/index.html"));
-})
+app.use(express.static(join(__dirname, './client/build')));
+
+app.get('*', (req, res) => {
+    res.sendFile(join(__dirname, './client/build/index.html'));
+});
 
 const httpServer = createServer(app);
 httpServer.listen(PORT);
